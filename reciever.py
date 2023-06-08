@@ -1,9 +1,17 @@
+"""
+Script that plays the part of the receiver. Used for testing only.
+"""
 import time
 from datetime import datetime
 import requests
 
 
 def format_message(item):
+    """
+    The helping function that formats a message
+    :param item: Message
+    :return: Formatted message
+    """
     from_user = item['from']
     to_user = item['to']
     text = item['text']

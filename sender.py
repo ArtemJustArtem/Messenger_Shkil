@@ -1,3 +1,6 @@
+"""
+Script that plays the part of the sender. Used for testing only.
+"""
 import requests
 
 
