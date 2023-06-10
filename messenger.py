@@ -39,6 +39,7 @@ class Chat(QWidget, Ui_Chat):
             response = requests.get('{}/connect'.format(self.url), params={'name': self.name})
         except:
             QMessageBox.critical(self, "Server not available", "Something went wrong!")
+            self.change_account()
             return
         if response.json()['status'] == 'true':
             self.greeting.setText("Hello, {}".format(self.name))
@@ -110,11 +111,11 @@ class Chat(QWidget, Ui_Chat):
             response = requests.get("{}/chats".format(self.url), params={'user': self.name})
         except:
             QMessageBox.critical(self, "Server not available", "Something went wrong!")
-            self.opened = False
+            self.change_account()
             return
         if response.json()['status'] == 'false':
             QMessageBox.critical(self, "An error occurred", "Something went wrong!")
-            self.opened = False
+            self.change_account()
             return
         chats = response.json()['chats']
         if every:
@@ -176,6 +177,7 @@ class NewChat(QWidget, Ui_NewChat):
     def create_clicked(self):
         if self.name.text() == "":
             QMessageBox.critical(self, "Invalid name", "Please, write a name!")
+            return
         try:
             response = requests.get("{}/addchat".format(self.url), params={'chat': self.name.text(), 'user': self.user})
         except:
@@ -199,6 +201,7 @@ class NewUser(QWidget, Ui_NewUser):
     def add_clicked(self):
         if self.name.text() == "":
             QMessageBox.critical(self, "Invalid name", "Please, write a name!")
+            return
         try:
             response = requests.get("{}/adduser".format(self.url), params={'chat': self.chat, 'user': self.name.text(), 'who': self.who})
         except:
