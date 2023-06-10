@@ -32,6 +32,7 @@ class Chat(QWidget, Ui_Chat):
         self.name = ""
         self.opened = False
         self.to = ""
+        self.prev = []
 
     def set_name(self, name):
         """
@@ -39,6 +40,7 @@ class Chat(QWidget, Ui_Chat):
         :param name: Name of the user
         """
         self.name = name
+        self.prev = []
         try:
             response = requests.get('{}/connect'.format(self.url), params={'name': self.name, 'signin': 'true'})
         except:
@@ -66,6 +68,7 @@ class Chat(QWidget, Ui_Chat):
             if response.json()['status'] == 'true':
                 self.to = self.user_to.text()
                 self.opened = True
+                self.update_messages(True)
             else:
                 QMessageBox.critical(self, "Invalid username", "Username wasn't found!")
 
@@ -103,14 +106,14 @@ class Chat(QWidget, Ui_Chat):
             name = message['from']
         date_time = datetime.fromtimestamp(message['time']).strftime('%H:%M:%S %d.%m.%Y')
         text = message['text']
-        self.chat.setPlainText("{}{} at {}:\n{}\n\n".format(self.chat.toPlainText(), name, date_time, text))
+        self.chat.insertPlainText("{} at {}:\n{}\n\n".format(name, date_time, text))
 
-    def update_messages(self):
+    def update_messages(self, all=False):
         """
         The function that updates the list of messages needed to be displayed
+        :param all: checks if all messages should be displayed (False by default)
         """
         if self.opened:
-            self.chat.setPlainText("")
             try:
                 response = requests.get('{}/messages'.format(self.url), params={'from': self.name, 'to': self.to})
             except:
@@ -121,8 +124,12 @@ class Chat(QWidget, Ui_Chat):
             if len(messages) == 0:
                 self.chat.setPlainText("This chat has no messages yet. Send something!")
             else:
+                if all or self.prev == []:
+                    self.chat.setPlainText("")
                 for message in messages:
-                    self.display_message(message)
+                    if all or message not in self.prev:
+                        self.display_message(message)
+            self.prev = messages
 
     def change_account(self):
         """
