@@ -15,7 +15,7 @@ class Chat(QWidget, Ui_Chat):
         self.send.clicked.connect(self.send_message)
         self.change.clicked.connect(self.change_account)
         self.timer = QTimer()
-        self.timer.timeout.connect(self.update)
+        self.timer.timeout.connect(self.update_all)
         self.timer.start(100)
         self.chat_list.itemClicked.connect(self.open_chat)
         self.new_chat.clicked.connect(self.create_chat_clicked)
@@ -125,7 +125,7 @@ class Chat(QWidget, Ui_Chat):
                 QListWidgetItem(chat, self.chat_list)
         self.prev_chats = chats
 
-    def update(self):
+    def update_all(self):
         self.update_messages()
         self.update_chats()
 
