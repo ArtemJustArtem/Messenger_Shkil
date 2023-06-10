@@ -26,7 +26,7 @@ class Chat(QWidget, Ui_Chat):
         self.open_2.clicked.connect(self.change_account)
         self.timer = QTimer()
         self.timer.timeout.connect(self.update_messages)
-        self.timer.start(1000)
+        self.timer.start(100)
         self.welcome = welcome
         self.url = url
         self.name = ""
@@ -42,7 +42,7 @@ class Chat(QWidget, Ui_Chat):
         try:
             response = requests.get('{}/connect'.format(self.url), params={'name': self.name, 'signin': 'true'})
         except:
-            QMessageBox.critical(self, "Server not avaliable", "Something went wrong!")
+            QMessageBox.critical(self, "Server not available", "Something went wrong!")
             self.opened = False
             return
         if response.json()['status'] == 'true':
@@ -60,7 +60,7 @@ class Chat(QWidget, Ui_Chat):
             try:
                 response = requests.get('{}/connect'.format(self.url), params={'name': self.user_to.text(), 'signin': 'false'})
             except:
-                QMessageBox.critical(self, "Server not avaliable", "Something went wrong!")
+                QMessageBox.critical(self, "Server not available", "Something went wrong!")
                 self.opened = False
                 return
             if response.json()['status'] == 'true':
@@ -83,13 +83,13 @@ class Chat(QWidget, Ui_Chat):
                 response = requests.post('{}/send'.format(self.url), json=message)
                 self.update_messages()
             except:
-                QMessageBox.critical(self, "Server not avaliable", "Something went wrong!")
+                QMessageBox.critical(self, "Server not available", "Something went wrong!")
                 self.opened = False
                 return
             finally:
                 self.message_enter.setPlainText("")
             if response.status_code != 200:
-                QMessageBox.critical(self, "An error occured", "Something went wrong!")
+                QMessageBox.critical(self, "An error occurred", "Something went wrong!")
                 self.opened = False
 
     def display_message(self, message):
@@ -103,7 +103,7 @@ class Chat(QWidget, Ui_Chat):
             name = message['from']
         date_time = datetime.fromtimestamp(message['time']).strftime('%H:%M:%S %d.%m.%Y')
         text = message['text']
-        self.chat.setPlainText("{}{} at {}:\n{}\n\n".format(self.chat.toPlainText() ,name, date_time, text))
+        self.chat.setPlainText("{}{} at {}:\n{}\n\n".format(self.chat.toPlainText(), name, date_time, text))
 
     def update_messages(self):
         """
@@ -114,7 +114,7 @@ class Chat(QWidget, Ui_Chat):
             try:
                 response = requests.get('{}/messages'.format(self.url), params={'from': self.name, 'to': self.to})
             except:
-                QMessageBox.critical(self, "Server not avaliable", "Something went wrong!")
+                QMessageBox.critical(self, "Server not available", "Something went wrong!")
                 self.opened = False
                 return
             messages = response.json()['messages']
