@@ -59,12 +59,13 @@ def add_user():
     try:
         chat = request.args['chat']
         user = request.args['user']
+        who = request.args['who']
     except:
         abort(400)
     for token in [user, chat]:
         if not isinstance(token, str) or not token or len(token) > 1024:
             abort(400)
-    if chat in chats:
+    if chat in chats and who in chats[chat]['members'] and user in users:
         chats[chat]['members'].add(user)
         return {'status': 'true'}
     else:
@@ -87,7 +88,7 @@ def add_chat():
         chats[chat] = {
             'length': 0,
             'members': {user},
-            'messages': {}
+            'messages': []
         }
         return {'status': 'true'}
 
