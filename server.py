@@ -134,4 +134,22 @@ def messages_view():
         return {'status': 'false', 'messages': []}
 
 
+@app.route("/chats")
+def chats_view():
+    try:
+        user = request.args['user']
+    except:
+        abort(400)
+    if not isinstance(user, str) or not user or len(user) > 1024:
+        abort(400)
+    if user in users:
+        chat_list = []
+        for name, chat in chats.items():
+            if user in chat['members']:
+                chat_list.append(name)
+        return {'status': 'true', 'chats': chat_list}
+    else:
+        return {'status': 'false', 'chats': []}
+
+
 app.run()
